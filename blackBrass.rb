@@ -32,10 +32,7 @@ end
 
 post '/tasks' do
   content_type :json
-  puts params.inspect
-  task2 = JSON.parse request.body.read
-  puts task2
-  task = Task.new(task2)
+  task = Task.new(JSON.parse request.body.read)
   task.save()
   task.to_json
 end

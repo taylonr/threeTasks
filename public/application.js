@@ -10,31 +10,34 @@ var Task = Backbone.Model.extend({});
 var TaskStore = Backbone.Collection.extend({
     model: Task,
     url: 'http://localhost:4567/tasks'
-})   ;
+});
 
 var tasks = new TaskStore;
 
 
 var TaskView = Backbone.View.extend({
+    template:_.template($("#task_template").html()),
     events: {"click #create" : "handleNewTask"},
+    initialize: function(){
+        tasks.fetch({success: function(){view.render();}});
+    },
+
     handleNewTask: function(){
         var inputField = $('input[name=newTask]');
         tasks.create({description: inputField.val()});
     },
+
     render: function(){
-        var data = tasks.map(function(task){return task.get('description') + '\r\n'});
-        var result = data.reduce(function(memo, str){return memo + str}, '');
-        $('#taskList').text(result);
+        $(this.el).html(this.template({
+            t: this.collection.toJSON()
+        }));
+
         return this;
-}
+    }
 });
 
-tasks.bind('add', function(task){
-    tasks.fetch({success: function(){view.render();}});
-})
+var view = new TaskView({collection: tasks, el: $('#taskContainer')});
 
-var view = new TaskView({el: $('#taskArea')});
-
-$('#fetch').click(function(){
+tasks.bind('add', function(){
     tasks.fetch({success: function(){view.render();}});
 });

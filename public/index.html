@@ -6,25 +6,17 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript" src="backbone-min.js"></script>
     <title></title>
-    <style type="text/css">
-        input[type="text"]{
-            width: 450px;
-        }
-        #taskArea{
-            width:600px;
-            margin: 10px auto;
-        }
-    </style>
 </head>
 <body>
-<div id='taskArea'>
-    <form method="POST" action="#" id="taskForm" name="tasks" onsubmit="return false">
-        <input name="newTask" type="text"/>
-        <input type="submit" id='create' value="create"/>
-    </form>
-    <input type='button' id='fetch' value='fetch'/>
-    <textarea id='taskList'></textarea>
-</div>
+<div id='taskContainer'></div>
 </body>
+<script type="text/template" id="task_template">
+     <label>Task</label>
+    <ol>
+        <% _.each(t, function(ts){%>
+        <li><%= ts.description %></li>
+        <% }); %>
+    </ol>
+</script>
 <script src="application.js"></script>
 </html>
