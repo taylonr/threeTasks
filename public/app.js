@@ -60,7 +60,7 @@ var AppView = Backbone.View.extend({
        Tasks.bind('reset', this.addAll, this);
        Tasks.bind('all', this.render, this);
 
-       Tasks.fetch({success:function(){view.render()}});
+       Tasks.fetch();
    },
 
    render: function(){
