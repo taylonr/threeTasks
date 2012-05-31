@@ -17,7 +17,8 @@ var tasks = new TaskStore;
 
 var TaskView = Backbone.View.extend({
     template:_.template($("#task_template").html()),
-    events: {"click #create" : "handleNewTask"},
+    events: {"click #create" : "handleNewTask",
+    "click li": "editTask"},
     initialize: function(){
         tasks.fetch({success: function(){view.render();}});
     },
@@ -25,6 +26,10 @@ var TaskView = Backbone.View.extend({
     handleNewTask: function(){
         var inputField = $('input[name=newTask]');
         tasks.create({description: inputField.val()});
+    },
+
+    editTask: function(){
+      this.$el.addclass('editing');
     },
 
     render: function(){
@@ -41,3 +46,5 @@ var view = new TaskView({collection: tasks, el: $('#taskContainer')});
 tasks.bind('add', function(){
     tasks.fetch({success: function(){view.render();}});
 });
+
+setInterval(function(){tasks.fetch({success: function(){view.render();}});}, 1000);

@@ -26,13 +26,21 @@ end
 
 get '/tasks' do
   content_type :json
-  @task = Task.all
+  @task = Task.limit(3)
   @task.to_json
 end
 
 post '/tasks' do
   content_type :json
   task = Task.new(JSON.parse request.body.read)
+  task.save()
+  task.to_json
+end
+
+put '/tasks/:id' do
+  content_type :json
+  task = Task.find_by_id(params[:id])
+  task.update_attributes!(JSON.parse request.body.read)
   task.save()
   task.to_json
 end

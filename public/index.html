@@ -8,15 +8,24 @@
     <title></title>
 </head>
 <body>
-<div id='taskContainer'></div>
+<div id='taskContainer'>
+    <ol id='task-list'></ol>
+</div>
 </body>
-<script type="text/template" id="task_template">
+<!--<script type="text/template" id="task_template">
      <label>Task</label>
     <ol>
         <% _.each(t, function(ts){%>
         <li><%= ts.description %></li>
         <% }); %>
     </ol>
+</script>-->
+
+<script type="text/template" id="task-template">
+    <div class="view">
+        <label><%= description %></label>
+    </div>
+    <input class="edit" type="text" value="<%= description %>" />
 </script>
-<script src="application.js"></script>
+<script src="app.js"></script>
 </html>
