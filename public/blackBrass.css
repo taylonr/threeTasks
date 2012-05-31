@@ -12,6 +12,22 @@ body {
     display:block;
 }
 
-#task-list li.editing .view{
-    display:none;
+#task-list li.editing .taskView {
+    display: none;
+}
+
+ol.task {
+    font-size: x-large;
+    margin-left: 50px;
+    margin-top: 5px;
+}
+
+.taskView {
+    font-size: x-large;
+    padding-bottom: 25px;
+}
+
+input.edit {
+    font-size: large;
+    padding: 5px;
 }

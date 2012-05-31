@@ -1,32 +1,63 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<html lang="en">
 <head>
     <script type="text/javascript" src="underscore-min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript" src="backbone-min.js"></script>
-    <link rel="stylesheet" href="blackBrass.css"/>
-    <title></title>
+    <script type="text/javascript" src="bootstrap.min.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="blackBrass.css" type="text/css">
 </head>
+
 <body>
-<div id='taskContainer'>
-    <ol id='task-list'></ol>
+
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="brand" href="#">threeTasks</a>
+        </div>
+    </div>
 </div>
+
+<div id='taskContainer' class="container well">
+    <ol id='task-list' class='task'></ol>
+</div>
+<!--<div class="tabbable tabs-left">
+    <ul class="nav nav-tabs">
+        <li><a href="#daily">Day</a></li>
+        <li><a href="#montly">Month</a></li>
+        <li><a href="#yearly">Year</a></li>
+    </ul>
+    <div class="tab-content">
+            <div class="tab-pane" id="daily">
+                <div id='taskContainer' class="container">
+                    <ol id='task-list' class='task'></ol>
+                </div>
+        </div>
+            <div class="tab-pane" id="monthly">
+                <div id='monthContainer' class="row-fluid">
+                    &lt;!&ndash;<ol id='monthList' class='task'></ol>&ndash;&gt;
+                    Monthly Tasks
+                </div>
+        </div>
+            <div class="tab-pane" id="yearly">
+                <div id='yearContainer' class="row-fluid">
+                    &lt;!&ndash;<ol id='yearList' class='task'></ol>&ndash;&gt;
+                    Yearly Tasks
+            </div>
+        </div>
+    </div>
+</div>-->
+
+
 </body>
-<!--<script type="text/template" id="task_template">
-     <label>Task</label>
-    <ol>
-        <% _.each(t, function(ts){%>
-        <li><%= ts.description %></li>
-        <% }); %>
-    </ol>
-</script>-->
 
 <script type="text/template" id="task-template">
     <div class="view">
-        <label><%= description %></label>
+        <label class="taskView"><%= description %></label>
     </div>
-    <input class="edit" type="text" value="<%= description %>" />
+    <input class="edit input-xxlarge focused" type="text" value="<%= description %>"/>
 </script>
 <script src="app.js"></script>
 </html>
