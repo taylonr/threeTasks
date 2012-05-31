@@ -26,7 +26,12 @@ end
 
 get '/tasks' do
   content_type :json
-  @task = Task.limit(3)
+  @task = Task.limit(3).all
+  while @task.length < 3
+    emptyTask = Task.new(:description => "Enter Task", :time_type=> 0)
+    emptyTask.save()
+    @task.push(emptyTask)
+  end
   @task.to_json
 end
 
