@@ -18,9 +18,10 @@ var TaskView = Backbone.View.extend({
    tagName: 'li',
     template:_.template($("#task-template").html()),
     events: {
-        'click': 'editTask',
+        'click .taskView': 'editTask',
         'keypress .edit'  : 'updateOnEnter',
-        'blur .edit'      : 'close'
+        'blur .edit'      : 'close',
+        'click .icon-ok': 'completeTask'
     },
 
     initialize: function(){

@@ -12,14 +12,16 @@ body {
     display:block;
 }
 
-#task-list li.completed .view{
-    text-decoration: line-through;
-}
-
 #task-list li.completed .taskView{
+    text-decoration: line-through;
     color: grey;
 }
-#task-list li.editing .taskView {
+
+#task-list li.completed .icon-ok{
+    display: none;
+}
+
+#task-list li.editing .view {
     display: none;
 }
 
@@ -32,6 +34,7 @@ ol.task {
 .taskView {
     font-size: x-large;
     padding-bottom: 25px;
+    vertical-align: top;
 }
 
 input.edit {
