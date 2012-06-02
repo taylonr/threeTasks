@@ -92,7 +92,8 @@ end
 
 get '/auth/:provider/callback' do
   auth = request.env['omniauth.auth']
-  user = User.where(:provider => auth["provider"], :uid => auth["uid"]).first() || User.create(:provider => auth["provider"], :uid => auth["uid"])
-  session[:user_id] = user.id
-  redirect '/'
+  user = User.where(:provider => auth["provider"], :uid => auth["uid"]).first()# || User.create(:provider => auth["provider"], :uid => auth["uid"])
+  user.to_json
+  #session[:user_id] = user.id
+  #redirect '/'
 end
