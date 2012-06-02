@@ -12,6 +12,10 @@ body {
     display:block;
 }
 
+#task-list li.completed .view{
+    text-decoration: line-through;
+}
+
 #task-list li.editing .taskView {
     display: none;
 }
