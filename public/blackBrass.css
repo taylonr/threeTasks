@@ -16,6 +16,9 @@ body {
     text-decoration: line-through;
 }
 
+#task-list li.completed .taskView{
+    color: grey;
+}
 #task-list li.editing .taskView {
     display: none;
 }

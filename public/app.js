@@ -31,6 +31,9 @@ var TaskView = Backbone.View.extend({
     render: function(){
         this.$el.html(this.template(this.model.toJSON()));
         this.input = this.$('.edit');
+        if(this.model.toJSON().completed)
+            this.$el.addClass('completed');
+
         return this;
     } ,
 

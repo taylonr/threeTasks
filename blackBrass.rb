@@ -44,7 +44,7 @@ end
 
 get '/tasks' do
   content_type :json
-  Task.delete_all(Task.by_expires.map{|date| Time.new})
+  Task.delete_all(:expires => {:$lt => Time.now})
 
   @task = Task.limit(3).all
   while @task.length < 3
