@@ -90,10 +90,9 @@ put '/tasks/:id' do
   task.to_json
 end
 
-get '/auth/twitter/callback' do
+get '/auth/:provider/callback' do
   auth = request.env['omniauth.auth']
-  user = User.first(:provider => auth["provider"], :uid => auth["uid"]) || User.create(:provider => auth["provider"], :uid => auth["uid"])
-  #auth["user_info"]["name"]
+  user = User.where(:provider => auth["provider"], :uid => auth["uid"]).first() || User.create(:provider => auth["provider"], :uid => auth["uid"])
   session[:user_id] = user.id
   redirect '/'
 end
