@@ -46,8 +46,9 @@ var TaskView = Backbone.View.extend({
     close: function() {
         var value = this.input.val();
         if (!value) this.clear();
-        this.model.save({description: value, time_type: 0});
+        this.model.save({description: value, time_type: 0, completed: false});
         this.$el.removeClass("editing");
+        this.$el.removeClass('completed');
     },
 
     completeTask: function() {
