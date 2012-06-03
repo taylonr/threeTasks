@@ -44,6 +44,8 @@ end
 configure :test do
   set :twitterKey => 'Uwk8eu2sGU8HGhzvCK8aA'
   set :twitterSecret => '78vXIZQ31n5lWELfPNnnqWZGwgZjzvoZorqzPPRmSSA'
+  set :facebookId => '369643956424034'
+  set :facebookSecret => 'd9027d2a57eb62b1bedf56d2245eca71'
 
   mongo_uri = 'mongodb://threetaskuser:OegFFfZHlYZ559Z@ds031777.mongolab.com:31777/dev-threetasks'
   MongoMapper.connection = Mongo::Connection.from_uri(mongo_uri)
