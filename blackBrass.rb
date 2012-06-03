@@ -21,7 +21,6 @@ class Task
 
   def set_expires
     now = Time.new
-
     if(time_type == 0)
       self.expires = now.end_of_day()
     elsif(time_type == 1)
@@ -53,6 +52,7 @@ configure :test do
   enable :sessions
 end
 
+
 configure :development do
   set :twitterKey => 'our1xG0LeJcCXLj0MAMLg'
   set :twitterSecret => 'quMYVPmoZoW8FGlfkaAkRfHwq68YC7UtD02OMDLYg'
@@ -71,7 +71,13 @@ use OmniAuth::Builder do
 end
 
 get '/' do
-  File.read(File.join('public', 'index.html'))
+  #File.read(File.join('public', 'index.html'))
+  erb :index
+end
+
+post '/signout' do
+  session.clear
+  redirect '/'
 end
 
 get '/tasks' do
@@ -101,10 +107,6 @@ get '/auth/:provider/callback' do
   user = User.where(:provider => auth["provider"], :uid => auth["uid"].to_i).first() ||
       User.create(:provider => auth["provider"], :uid => auth["uid"], :name => auth['info']['name'])
   session[:user_id] = user.id
+  session[:user_name] = user.name
   redirect '/'
-end
-
-get '/applications' do
-  @app = Application.new
-  @app.Name = session[:user_id]
 end

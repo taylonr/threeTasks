@@ -14,6 +14,8 @@ var TaskStore = Backbone.Collection.extend({
 
 var Tasks = new TaskStore;
 
+_.templateSettings = {interpolate : /\{\{(.+?)\}\}/g};
+
 var TaskView = Backbone.View.extend({
    tagName: 'li',
     template:_.template($("#task-template").html()),
@@ -88,3 +90,11 @@ var AppView = Backbone.View.extend({
 });
 
 var App= new AppView;
+
+($('#signout').bind('click', function(){
+    $.ajax({
+        url: '/signout',
+        method: 'post',
+        success : window.location = '/'
+    });
+})).(jQuery);
