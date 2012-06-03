@@ -2,12 +2,12 @@
         "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
-    <script type="text/javascript" src="underscore-min.js"></script>
+    <script type="text/javascript" src="../underscore-min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script type="text/javascript" src="backbone-min.js"></script>
-    <script type="text/javascript" src="bootstrap.min.js"></script>
-    <link rel="stylesheet" href="bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="blackBrass.css" type="text/css">
+    <script type="text/javascript" src="../backbone-min.js"></script>
+    <script type="text/javascript" src="../bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="../blackBrass.css" type="text/css">
 </head>
 
 <body>
@@ -16,11 +16,25 @@
     <div class="navbar-inner">
         <div class="container">
             <a class="brand" href="#">threeTasks</a>
+
             <div class='nav-collapse collapse'>
                 <ul class='nav'>
-                    <li>
-                        <a href='/auth/twitter'>Sign in with Twitter</a>
-                    </li>
+                    <a class="btn btn-inverse" data-toggle="modal" href="#myModal">Sign-In</a>
+
+                    <div class="modal hide" id="myModal">
+                        <div class="modal-header">
+                            <button type="buttonModal header" class="close" data-dismiss="modal">×</button>
+                            <h3>Sign-In</h3>
+                        </div>
+                        <div class="modal-body">
+                            <a href='/auth/twitter'><img src='img/Twitter_logo.png' width='128' height='128'></a>
+                            <a href='/auth/facebook'><img src='img/facebook-logo.png' width='128' height='128'></a>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+                        </div>
+                    </div>
+
                 </ul>
             </div>
         </div>
@@ -36,11 +50,15 @@
 <script type="text/template" id="task-template">
     <div class="view">
         <form class='form-inline'>
-        <label class="taskView"><%= description %></label>
-        <i class='icon-ok'></i>
+            <label class="taskView"><%= description %></label>
+            <i class='icon-ok'></i>
         </form>
     </div>
     <input class="edit input-xxlarge focused" type="text" value="<%= description %>"/>
 </script>
-<script src="app.js"></script>
+
+<script type="text/template" id="user-template">
+
+</script>
+<script src="../app.js"></script>
 </html>

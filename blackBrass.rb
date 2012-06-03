@@ -4,6 +4,7 @@ require 'mongo_mapper'
 require 'json'
 require 'omniauth'
 require 'omniauth-twitter'
+require 'omniauth-facebook'
 
 class Task
   include MongoMapper::Document
@@ -53,6 +54,8 @@ end
 configure :development do
   set :twitterKey => 'our1xG0LeJcCXLj0MAMLg'
   set :twitterSecret => 'quMYVPmoZoW8FGlfkaAkRfHwq68YC7UtD02OMDLYg'
+  set :facebookId => '245420668897155'
+  set :facebookSecret => 'b5465dc90761c27db32b00d523133d87'
 
   mongo_uri = 'mongodb://threetaskuser:OegFFfZHlYZ559Z@ds031777.mongolab.com:31777/dev-threetasks'
   MongoMapper.connection = Mongo::Connection.from_uri(mongo_uri)
@@ -62,6 +65,7 @@ end
 
 use OmniAuth::Builder do
   provider :twitter, settings.twitterKey, settings.twitterSecret
+  provider :facebook, settings.facebookId, settings.facebookSecret
 end
 
 get '/' do
@@ -92,7 +96,8 @@ end
 
 get '/auth/:provider/callback' do
   auth = request.env['omniauth.auth']
-  user = User.where(:provider => auth["provider"], :uid => auth["uid"].to_i).first() || User.create(:provider => auth["provider"], :uid => auth["uid"])
+  user = User.where(:provider => auth["provider"], :uid => auth["uid"].to_i).first() ||
+      User.create(:provider => auth["provider"], :uid => auth["uid"], :name => auth['info']['name'])
   session[:user_id] = user.id
   redirect '/'
 end
