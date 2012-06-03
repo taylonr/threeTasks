@@ -6,6 +6,10 @@ require 'omniauth'
 require 'omniauth-twitter'
 require 'omniauth-facebook'
 
+class Application
+  String Name
+end
+
 class Task
   include MongoMapper::Document
 
@@ -100,4 +104,9 @@ get '/auth/:provider/callback' do
       User.create(:provider => auth["provider"], :uid => auth["uid"], :name => auth['info']['name'])
   session[:user_id] = user.id
   redirect '/'
+end
+
+get '/applications' do
+  @app = Application.new
+  @app.Name = session[:user_id]
 end
