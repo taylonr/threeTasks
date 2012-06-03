@@ -6,10 +6,6 @@ require 'omniauth'
 require 'omniauth-twitter'
 require 'omniauth-facebook'
 
-class Application
-  String Name
-end
-
 class Task
   include MongoMapper::Document
 
