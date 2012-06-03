@@ -52,7 +52,6 @@ configure :test do
   enable :sessions
 end
 
-
 configure :development do
   set :twitterKey => 'our1xG0LeJcCXLj0MAMLg'
   set :twitterSecret => 'quMYVPmoZoW8FGlfkaAkRfHwq68YC7UtD02OMDLYg'
@@ -64,6 +63,8 @@ configure :development do
   MongoMapper.database = 'dev-threetasks'
   enable :sessions
 end
+
+set :environment, :test
 
 use OmniAuth::Builder do
   provider :twitter, settings.twitterKey, settings.twitterSecret
