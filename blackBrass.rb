@@ -64,27 +64,32 @@ configure :development do
   enable :sessions
 end
 
-set :environment, :test
-
 use OmniAuth::Builder do
   provider :twitter, settings.twitterKey, settings.twitterSecret
   provider :facebook, settings.facebookId, settings.facebookSecret
 end
 
 get '/' do
-  #File.read(File.join('public', 'index.html'))
-  erb :index
+  user_id = session[:user_id]
+  if(user_id.nil?)
+    erb :preauth
+  else
+    erb :index
+  end
+end
+
+get '/about' do
+  erb :about
 end
 
 post '/signout' do
   session.clear
-  redirect '/'
 end
 
 get '/tasks' do
   content_type :json
   Task.delete_all(:expires => {:$lt => Time.now})
-
+   puts session[:user_id]
   @task = Task.where(:user_id => session[:user_id]).limit(3).all
   while @task.length < 3
     emptyTask = Task.new(:description => "Enter Task", :time_type => 0)
@@ -98,8 +103,11 @@ put '/tasks/:id' do
   content_type :json
   task = Task.find_by_id(params[:id])
   task.update_attributes!(JSON.parse request.body.read)
+  puts session[:user_id]
   task.user_id = session[:user_id]
   task.save()
+  puts 'saved'
+  puts session[:user_id]
   task.to_json
 end
 
