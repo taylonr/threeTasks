@@ -98,4 +98,4 @@ $('#signout').bind('click', function(){
     });
 
     signout.success(function(){window.location = '/'});
-}).(jQuery);
+})(jQuery);
