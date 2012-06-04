@@ -91,11 +91,11 @@ var AppView = Backbone.View.extend({
 
 var App= new AppView;
 
-($('#signout').bind('click', function(){
+$('#signout').bind('click', function(){
     var signout = $.ajax({
         url: '/signout',
         type: 'post'
     });
 
     signout.success(function(){window.location = '/'});
-})).(jQuery);
+}).(jQuery);
