@@ -124,11 +124,13 @@ get '/auth/:provider/callback' do
   auth = request.env['omniauth.auth']
   user = User.where(:provider => auth["provider"], :uid => auth["uid"].to_i).first() ||
       User.create(:provider => auth["provider"], :uid => auth["uid"].to_i, :name => auth['info']['name'])
+
   session[:user_id] = user.id
   session[:user_name] = user.name
   session[:uid] = auth['uid'].to_i
   session[:provider] = auth['provider']
 
+  response.set_cookie('user_name', user.name)
   response.set_cookie('userid', user.id)
   response.set_cookie('provider', auth['provider'])
   response.set_cookie('uid', auth['uid'].to_i)
