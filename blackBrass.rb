@@ -14,10 +14,12 @@ class Task
   scope :by_expires, lambda { |date| where(:expires.lt => date)}
 
   key :description, String
-  key :user_id, ObjectId
+  key :user_id, String
   key :expires, Time
   key :time_type, Integer
   key :completed, Boolean
+  key :provider, String
+  key :uid, Integer
 
   def set_expires
     now = Time.new
@@ -70,7 +72,8 @@ use OmniAuth::Builder do
 end
 
 get '/' do
-  user_id = session[:user_id]
+  user_id = session[:user_id] || request.cookies['userid']
+  puts user_id
   if(user_id.nil?)
     erb :preauth
   else
@@ -93,13 +96,17 @@ end
 get '/tasks' do
   content_type :json
   Task.delete_all(:expires => {:$lt => Time.now})
-   puts session[:user_id]
-  @task = Task.where(:user_id => session[:user_id]).limit(3).all
+
+  @task = Task.where(:provider => session[:provider], :uid => session[:uid].to_i).limit(3).all
+
   while @task.length < 3
-    emptyTask = Task.new(:description => "Enter Task", :time_type => 0)
+    emptyTask = Task.new(:description => "Enter Task", :time_type => 0, :user_id => session[:user_id],
+    :provider => session['provider'], :uid => session['uid'].to_i)
+
     emptyTask.save()
     @task.push(emptyTask)
   end
+
   @task.to_json
 end
 
@@ -107,19 +114,23 @@ put '/tasks/:id' do
   content_type :json
   task = Task.find_by_id(params[:id])
   task.update_attributes!(JSON.parse request.body.read)
-  puts session[:user_id]
+  task.provider = session[:provider]
+  task.uid = session[:uid].to_i
   task.user_id = session[:user_id]
-  task.save()
-  puts 'saved'
-  puts session[:user_id]
   task.to_json
 end
 
 get '/auth/:provider/callback' do
   auth = request.env['omniauth.auth']
   user = User.where(:provider => auth["provider"], :uid => auth["uid"].to_i).first() ||
-      User.create(:provider => auth["provider"], :uid => auth["uid"], :name => auth['info']['name'])
+      User.create(:provider => auth["provider"], :uid => auth["uid"].to_i, :name => auth['info']['name'])
   session[:user_id] = user.id
   session[:user_name] = user.name
+  session[:uid] = auth['uid'].to_i
+  session[:provider] = auth['provider']
+
+  response.set_cookie('userid', user.id)
+  response.set_cookie('provider', auth['provider'])
+  response.set_cookie('uid', auth['uid'].to_i)
   redirect '/'
 end
