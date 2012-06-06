@@ -51,7 +51,11 @@ configure :test do
   mongo_uri = 'mongodb://threetaskuser:OegFFfZHlYZ559Z@ds031777.mongolab.com:31777/dev-threetasks'
   MongoMapper.connection = Mongo::Connection.from_uri(mongo_uri)
   MongoMapper.database = 'dev-threetasks'
-  enable :sessions
+  use Rack::Session::Cookie, :key => 'rack.session',
+      :domain => 'threetasks.heroku.com',
+      :path => '/',
+      :expire_after => 2592000, # In seconds
+      :secret => 'zP501rH3Q7HvsWVrN1la'
 end
 
 configure :development do
@@ -63,7 +67,11 @@ configure :development do
   mongo_uri = 'mongodb://threetaskuser:OegFFfZHlYZ559Z@ds031777.mongolab.com:31777/dev-threetasks'
   MongoMapper.connection = Mongo::Connection.from_uri(mongo_uri)
   MongoMapper.database = 'dev-threetasks'
-  enable :sessions
+  use Rack::Session::Cookie, :key => 'rack.session',
+      :domain => 'localhost',
+      :path => '/',
+      :expire_after => 2592000, # In seconds
+      :secret => '4mS9hhH7LLb7858Hbrye'
 end
 
 use OmniAuth::Builder do
