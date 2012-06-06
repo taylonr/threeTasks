@@ -42,47 +42,25 @@ class User
   key :username, String
 end
 
-configure :test do
-  set :twitterKey => 'Uwk8eu2sGU8HGhzvCK8aA'
-  set :twitterSecret => '78vXIZQ31n5lWELfPNnnqWZGwgZjzvoZorqzPPRmSSA'
-  set :facebookId => '369643956424034'
-  set :facebookSecret => 'd9027d2a57eb62b1bedf56d2245eca71'
-
-  mongo_uri = 'mongodb://threetaskuser:OegFFfZHlYZ559Z@ds031777.mongolab.com:31777/dev-threetasks'
+configure do
+  mongo_uri = ENV['connectionString']
   MongoMapper.connection = Mongo::Connection.from_uri(mongo_uri)
-  MongoMapper.database = 'dev-threetasks'
+  MongoMapper.database = ENV['databaseName']
   use Rack::Session::Cookie, :key => 'rack.session',
-      :domain => 'threetasks.heroku.com',
+      :domain => ENV['domainName'],
       :path => '/',
       :expire_after => 2592000, # In seconds
-      :secret => 'zP501rH3Q7HvsWVrN1la'
-end
-
-configure :development do
-  set :twitterKey => 'our1xG0LeJcCXLj0MAMLg'
-  set :twitterSecret => 'quMYVPmoZoW8FGlfkaAkRfHwq68YC7UtD02OMDLYg'
-  set :facebookId => '245420668897155'
-  set :facebookSecret => 'b5465dc90761c27db32b00d523133d87'
-
-  mongo_uri = 'mongodb://threetaskuser:OegFFfZHlYZ559Z@ds031777.mongolab.com:31777/dev-threetasks'
-  MongoMapper.connection = Mongo::Connection.from_uri(mongo_uri)
-  MongoMapper.database = 'dev-threetasks'
-  use Rack::Session::Cookie, :key => 'rack.session',
-      :domain => 'localhost',
-      :path => '/',
-      :expire_after => 2592000, # In seconds
-      :secret => '4mS9hhH7LLb7858Hbrye'
+      :secret => ENV['sessionKey']
 end
 
 use OmniAuth::Builder do
-  provider :twitter, settings.twitterKey, settings.twitterSecret
-  provider :facebook, settings.facebookId, settings.facebookSecret
+  provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET'] #settings.twitterKey, settings.twitterSecret
+  provider :facebook, ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET'] #settings.facebookId, settings.facebookSecret
 end
 
 get '/' do
-  user_id = session[:user_id] || request.cookies['userid']
-  puts user_id
-  if(user_id.nil?)
+  uid = session[:uid] || request.cookies['uid']
+  if(uid.nil?)
     erb :preauth
   else
     erb :index
@@ -130,6 +108,7 @@ end
 
 get '/auth/:provider/callback' do
   auth = request.env['omniauth.auth']
+
   user = User.where(:provider => auth["provider"], :uid => auth["uid"].to_i).first() ||
       User.create(:provider => auth["provider"], :uid => auth["uid"].to_i, :name => auth['info']['name'])
 
@@ -138,9 +117,5 @@ get '/auth/:provider/callback' do
   session[:uid] = auth['uid'].to_i
   session[:provider] = auth['provider']
 
-  response.set_cookie('user_name', user.name)
-  response.set_cookie('userid', user.id)
-  response.set_cookie('provider', auth['provider'])
-  response.set_cookie('uid', auth['uid'].to_i)
   redirect '/'
 end
