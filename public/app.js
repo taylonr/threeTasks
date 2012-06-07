@@ -41,6 +41,9 @@ var TaskView = Backbone.View.extend({
     },
 
     editTask:function () {
+        if(this.$el.hasClass('completed'))
+            return;
+
         this.$el.addClass('editing');
         this.input.focus();
     },
