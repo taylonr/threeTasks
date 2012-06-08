@@ -7,19 +7,15 @@ require 'omniauth-twitter'
 require 'omniauth-facebook'
 
 class Task
-  include MongoMapper::Document
+  include MongoMapper::EmbeddedDocument
 
   before_validation :set_expires
-
-  scope :by_expires, lambda { |date| where(:expires.lt => date)}
+  embedded_in :user
 
   key :description, String
-  key :user_id, String
   key :expires, Time
   key :time_type, Integer
   key :completed, Boolean
-  key :provider, String
-  key :uid, Integer
 
   def set_expires
     now = Time.new
@@ -30,7 +26,6 @@ class Task
     elsif(time_type == 2)
       self.expires = now.end_of_year()
     end
-
   end
 end
 
@@ -40,9 +35,12 @@ class User
   key :provider, String
   key :uid, Integer
   key :username, String
+
+  many :tasks
 end
 
 configure do
+  $stdout.sync = true
   mongo_uri = ENV['connectionString']
   MongoMapper.connection = Mongo::Connection.from_uri(mongo_uri)
   MongoMapper.database = ENV['databaseName']
@@ -54,8 +52,8 @@ configure do
 end
 
 use OmniAuth::Builder do
-  provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET'] #settings.twitterKey, settings.twitterSecret
-  provider :facebook, ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET'] #settings.facebookId, settings.facebookSecret
+  provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
+  provider :facebook, ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET']
 end
 
 get '/' do
@@ -81,15 +79,16 @@ end
 
 get '/tasks' do
   content_type :json
-  Task.delete_all(:expires => {:$lt => Time.now})
+  User.delete_all(:conditions => {'task.expires' => {:$lt => Time.now}})
+  #User.tasks.delete_all(:expires => {:$lt => Time.now})
 
-  @task = Task.where(:provider => session[:provider], :uid => session[:uid].to_i).limit(3).all
+  user = User.where(:provider => session[:provider], :uid => session[:uid].to_i).first()
+  @task = user.tasks.take(3)
 
   while @task.length < 3
-    emptyTask = Task.new(:description => "Enter Task", :time_type => 0, :user_id => session[:user_id],
-    :provider => session['provider'], :uid => session['uid'].to_i)
-
-    emptyTask.save()
+    emptyTask = Task.new(:description => "Enter Task", :time_type => 0)
+    user.tasks <<  emptyTask
+    user.save()
     @task.push(emptyTask)
   end
 
@@ -98,11 +97,14 @@ end
 
 put '/tasks/:id' do
   content_type :json
-  task = Task.find_by_id(params[:id])
-  task.update_attributes!(JSON.parse request.body.read)
-  task.provider = session[:provider]
-  task.uid = session[:uid].to_i
-  task.user_id = session[:user_id]
+  user = User.where(:provider => session[:provider], :uid=> session[:uid].to_i).first()
+  updateTask = JSON.parse(request.body.read)
+
+  task = user.tasks.select {|t| t.id == BSON::ObjectId.from_string(params[:id])}.first()
+  task.description = updateTask['description']
+  task.completed = updateTask['completed']
+
+  user.save()
   task.to_json
 end
 
