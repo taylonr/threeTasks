@@ -17,6 +17,11 @@ class Task
   key :time_type, Integer
   key :completed, Boolean
 
+  def reset
+    self.description = 'Enter Task'
+    self.completed = false
+  end
+
   def set_expires
     now = Time.new
     if(time_type == 0)
@@ -79,10 +84,11 @@ end
 
 get '/tasks' do
   content_type :json
-  User.delete_all(:conditions => {'task.expires' => {:$lt => Time.now}})
-  #User.tasks.delete_all(:expires => {:$lt => Time.now})
 
-  user = User.where(:provider => session[:provider], :uid => session[:uid].to_i).first()
+  user = User.where(:provider => session[:provider], :uid=> session[:uid].to_i).first()
+  user.tasks.select {|t| t.expires < Time.now}.each{|t| t.reset()}
+  user.save()
+
   @task = user.tasks.take(3)
 
   while @task.length < 3
